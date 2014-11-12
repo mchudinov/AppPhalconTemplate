@@ -1,0 +1,70 @@
+<project default="all">  
+  
+  	<target name="Composer">
+		<exec executable='composer.bat' failonerror="true" osfamily="Windows">
+			<arg value="install"/>
+			<arg value="-vv"/>
+		</exec>
+		<exec executable="php" failonerror="true" osfamily="Unix">
+            <arg value="/bin/composer.phar"/>
+            <arg value="install"/>
+            <arg value="-vv"/>
+        </exec>
+	</target>
+  
+	<target name="Unittest" depends="Composer">
+		<delete dir="${basedir}/codecoverage"/>
+		<exec executable="php" failonerror="true">
+			<arg value="./vendor/phpunit/phpunit/phpunit"/>
+            <arg value="--coverage-html=${basedir}\codecoverage"/>
+			<arg value="--configuration"/>
+			<arg value="${basedir}/tests/phpunit.xml"/>
+		</exec>
+	</target>
+  
+	<target name="Syntax">
+		<apply executable="php" failonerror="true">
+			<arg value="-l"/>
+			<fileset dir="${basedir}">
+				<patternset>
+					<include name="**/*.php"/>
+					<exclude name="**/tests/**"/>
+					<exclude name="**/vendor/**"/>
+				</patternset>
+			</fileset>
+		</apply>
+	</target>
+    
+    <target name="CodeSniffer">
+        <apply executable="php" failonerror="true">
+            <arg value="${basedir}/vendor/squizlabs/php_codesniffer/scripts/phpcs"/>  
+            <arg value="--standard=${basedir}/tests/CodeSniffer"/>
+            <fileset dir="${basedir}">
+                <patternset>
+                    <include name="**/*.php"/>
+                    <exclude name="**/tests/**"/>
+                    <exclude name="**/vendor/**"/>
+                </patternset>
+            </fileset>
+        </apply>
+    </target>
+    
+    <target name="MessDetector">
+        <apply executable="php" failonerror="true">
+            <arg value="${basedir}/vendor/phpmd/phpmd/src/bin/phpmd"/>
+            <fileset dir="${basedir}">
+                <patternset>
+                    <include name="**/*.php"/>
+                    <exclude name="**/tests/**"/>
+                    <exclude name="**/vendor/**"/>
+                </patternset>
+            </fileset>
+            <arg value="text"/>
+            <arg value="${basedir}/tests/mdruleset.xml"/>
+        </apply>
+    </target> 
+  
+  <target name="all" depends="Composer, Syntax, Unittest, CodeSniffer, MessDetector">
+    <echo>Done!</echo>
+  </target>
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<phpunit bootstrap="phpunitbootstrap.php" stopOnError="false" stopOnFailure="false" processIsolation="false" strict="false" backupGlobals="false" backupStaticAttributes="false" stopOnSkipped="false" stopOnIncomplete="false">
+  <testsuites>
+    <testsuite name="unit tests">
+      <directory>./</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

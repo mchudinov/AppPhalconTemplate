@@ -1,0 +1,23 @@
+{
+    "name": "MyCompany/MyApplication",
+    "type": "application",
+    "description": "",
+    "keywords": [""],
+    "authors": [
+        {
+            "name": "Mikael Chudinov",
+            "email": "mikael@chudinov.net",
+            "homepage": "http://chudinov.net",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.1",
+        "apache/log4php": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.3.*",
+        "phpmd/phpmd": "dev-master",
+        "squizlabs/php_codesniffer": "dev-master"
+    }
+}
