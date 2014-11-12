@@ -11,15 +11,4 @@ class MyClass
     {
         return true;
     }
-    
-    private function getTrue234()
-    {
-        eval("echo'';");
-        goto a;
-        echo 'Foo';
-         
-        a:
-        echo 'Bar';
-        return true;
-    }
 }

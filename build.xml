@@ -52,6 +52,9 @@
     <target name="MessDetector">
         <apply executable="php" failonerror="true">
             <arg value="${basedir}/vendor/phpmd/phpmd/src/bin/phpmd"/>
+            <srcfile/>
+            <arg value="text"/>
+            <arg value="${basedir}/tests/mdruleset.xml"/>
             <fileset dir="${basedir}">
                 <patternset>
                     <include name="**/*.php"/>
@@ -59,8 +62,6 @@
                     <exclude name="**/vendor/**"/>
                 </patternset>
             </fileset>
-            <arg value="text"/>
-            <arg value="${basedir}/tests/mdruleset.xml"/>
         </apply>
     </target> 
   
