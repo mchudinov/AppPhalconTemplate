@@ -50,19 +50,21 @@
     </target>
     
     <target name="MessDetector">
-        <apply executable="php" failonerror="true">
+        <fileset dir="${basedir}" id="src.files.messdetector">
+            <patternset>
+                <include name="**/*.php"/>
+                <exclude name="**/tests/**"/>
+                <exclude name="**/vendor/**"/>
+            </patternset>
+        </fileset>
+        <pathconvert pathsep="," property="phpfilesmessdetector" refid="src.files.messdetector"/>
+        
+        <exec executable="php" failonerror="true">
             <arg value="${basedir}/vendor/phpmd/phpmd/src/bin/phpmd"/>
-            <srcfile/>
+            <arg value="${phpfilesmessdetector}"/>
             <arg value="text"/>
             <arg value="${basedir}/tests/mdruleset.xml"/>
-            <fileset dir="${basedir}">
-                <patternset>
-                    <include name="**/*.php"/>
-                    <exclude name="**/tests/**"/>
-                    <exclude name="**/vendor/**"/>
-                </patternset>
-            </fileset>
-        </apply>
+        </exec>
     </target> 
   
   <target name="all" depends="Composer, Syntax, Unittest, CodeSniffer, MessDetector">

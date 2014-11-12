@@ -10,3 +10,4 @@ Logger::configure('log4php.xml');
 $logger = Logger::getLogger(1);
 $logger->info("This is an informational message.");
 $logger->warn("I'm not feeling so good...");
+    
