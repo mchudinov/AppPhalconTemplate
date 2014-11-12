@@ -1,5 +1,6 @@
-Template for a simple PHP application. It can web or command line application.
+Template for a simple PHP application. This can be a web or a command line application.
 Template contains:
+
 * basic folder structure src, tests, log
 * composer.json
 * autoloader
