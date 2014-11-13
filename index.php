@@ -48,18 +48,19 @@ $reflector = $reader->get('MyClass2');
 
 var_dump($reflector);
 //Прочесть аннотации в блоке документации класса
-$annotations = $reflector->getClassAnnotations();
+$annotations = $reflector->getMethodsAnnotations();
+var_dump($annotations);
 
 //Произвести обход всех аннотаций
-/*foreach ($annotations as $annotation) {
-
+foreach ($annotations as $annotation) {
+var_dump($annotation);
     //Вывести название аннотации
-    echo $annotation->getName(), PHP_EOL;
+    //echo $annotation->getName(), PHP_EOL;
 
     //Вывести количество аргументов
-    echo $annotation->numberArguments(), PHP_EOL;
+    //echo $annotation->numberArguments(), PHP_EOL;
 
     //Вывести аргументы
-    print_r($annotation->getArguments());
-}*/
+    //print_r($annotation->getArguments());
+}
     
