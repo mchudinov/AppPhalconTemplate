@@ -1,15 +1,15 @@
 <?php
-define('APPPATH', __DIR__.DIRECTORY_SEPARATOR);
-require_once APPPATH.'vendor/autoload.php';
-Logger::configure('log4php.xml');
+define('APPROOT', __DIR__.DIRECTORY_SEPARATOR);
+require_once APPROOT.'vendor/autoload.php';
+//Logger::configure('log4php.xml');
 
 try {
     (new \Phalcon\Loader())->registerDirs(array(
-        APPPATH.'/src/classes/',
-        APPPATH.'/src/',
-		APPPATH,
-		APPPATH.'/tests/classes/',
-		APPPATH.'/tests/'
+        APPROOT.'/src/classes/',
+        APPROOT.'/src/',
+		APPROOT,
+		APPROOT.'/tests/classes/',
+		APPROOT.'/tests/'
     ))->register();
 
     $di = new Phalcon\DI\FactoryDefault();
@@ -24,10 +24,44 @@ $m = new MyClass();
 echo $m->getTrue();
 
 
-$logger = Logger::getLogger(1);
-$logger->info("This is an informational message.");
-$logger->warn("I'm not feeling so good...");
+class MyFormatter implements Phalcon\Logger\FormatterInterface 
+{
+    function format($message, $type, $timestamp, $context)
+    {
+        return '['.date('Y-m-d H:m:s',$timestamp).']'.' '.'['.$this->getType($type).']'.' '.$message.PHP_EOL;
+    }
+    
+    private function getType($type)
+    {
+        $strType = "AAA";
+        switch($type)
+        {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+        return $strType;
+    }
+}
 
+//$logger = Logger::getLogger(1);
+//$logger->info("This is an informational message.");
+//$logger->warn("I'm not feeling so good...");
+
+
+$logger = new Phalcon\Logger\Adapter\File(APPROOT.'/log/MyApp2-'.date('Y-m-d').'.log');
+$logger->setFormatter(new MyFormatter());
+$logger->log("This is a message");
+$logger->log("This is an error");
+$logger->error("This is another error");
+
+
+echo (new DateTime())->format('Y-m-d');
 
 /**
  * @Cache

@@ -1,5 +1,5 @@
 <?php
-defined('APPPATH') or die('No direct script access.');
+defined('APPROOT') or die('No direct script access.');
 
   /**
      * Это комментарий
