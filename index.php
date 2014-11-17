@@ -35,7 +35,7 @@ class Logger
 		$adapterFile->setFormatter(new LogFormatterFile());
 		$adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
 		$logger->push($adapterFile);
-		$logger->push($adapterFirePhp);
+		//$logger->push($adapterFirePhp);
 		return $logger;
 	}
 }
