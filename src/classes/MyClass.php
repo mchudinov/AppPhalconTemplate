@@ -9,9 +9,18 @@ class MyClass
     
 	/**
      * @Log
+     * @Cache
      */
     function getTrue()
     {
         return true;
+    }
+    
+    /**
+     * @LogDebug
+     */
+    function getFalse()
+    {
+        return false;
     }
 }

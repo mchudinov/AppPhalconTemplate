@@ -36,29 +36,17 @@
 	</target>
     
     <target name="CodeSniffer">
-        <apply executable="php" failonerror="true">
-            <arg value="${basedir}/vendor/squizlabs/php_codesniffer/scripts/phpcs"/>  
+        <exec executable="php" failonerror="true">
+            <arg value="${basedir}/vendor/squizlabs/php_codesniffer/scripts/phpcs"/>
+            <arg value="-v"/>            
             <arg value="--standard=${basedir}/tests/CodeSniffer"/>
-            <fileset dir="${basedir}">
-                <patternset>
-                    <include name="**/*.php"/>
-                    <exclude name="**/tests/**"/>
-                    <exclude name="**/vendor/**"/>
-                </patternset>
-            </fileset>
-        </apply>
+            <arg value="${basedir}/src"/>
+        </exec>
     </target>
     
     <target name="MessDetector">
-        <fileset dir="${basedir}" id="src.files.messdetector">
-            <patternset>
-                <include name="**/*.php"/>
-                <exclude name="**/tests/**"/>
-                <exclude name="**/vendor/**"/>
-            </patternset>
-        </fileset>
+        <dirset dir="${basedir}/src" id="src.files.messdetector"/>
         <pathconvert pathsep="," property="phpfilesmessdetector" refid="src.files.messdetector"/>
-        
         <exec executable="php" failonerror="true">
             <arg value="${basedir}/vendor/phpmd/phpmd/src/bin/phpmd"/>
             <arg value="${phpfilesmessdetector}"/>

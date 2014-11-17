@@ -6,7 +6,7 @@ class LogFormatterFile implements Phalcon\Logger\FormatterInterface
 {
     function format($message, $type, $timestamp, $context)
     {
-        return '['.date('Y-m-d H:m:s',$timestamp).']'.' '.'['.$this->getMessageType($type).']'.' '.$message.PHP_EOL;
+        return '['.date('Y-m-d H:m:s',$timestamp).']'.' '.'['.$this->getMessageType($type).']'.' '.$message.' '.$context.PHP_EOL;
     }
     
     private function getMessageType($n)
@@ -35,7 +35,7 @@ class Logger
 		$adapterFile->setFormatter(new LogFormatterFile());
 		$adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
 		$logger->push($adapterFile);
-		//$logger->push($adapterFirePhp);
+		$logger->push($adapterFirePhp);
 		return $logger;
 	}
 }
@@ -43,45 +43,52 @@ class Logger
 
 class DependencyInjector
 {
-	static function getInjector()
+    private static $_instance;
+    private function __construct()
+    {}
+    private function __clone()
+    {}
+    
+	static function getContainer()
 	{
-		$di = new Phalcon\DI\FactoryDefault();
-		$di->set('AnnotationsAdapter', function() {
-			return new \Phalcon\Annotations\Adapter\XCache();
-		});
-		$di->set('Logger', function() {
-			echo 123;
-			return Logger::getLogger(1);
-		});
-		return $di;
+        if (null === self::$_instance) 
+        {
+            self::$_instance = new Phalcon\DI();
+            self::$_instance['annotationsadapter'] = function() {
+                return new \Phalcon\Annotations\Adapter\XCache();
+            };
+            self::$_instance['logger'] = function() {
+                return Logger::getLogger(1);
+            };
+        }
+		return self::$_instance;
 	}
 }
 
 
-function isMethodAnnotated($obj, $strMethod)
+function isMethodAnnotated($obj, $strMethod, $strAnnotation)
 {
-	$di = DependencyInjector::getInjector();
-	$adapter = $di->getAnnotationsAdapter();
+    $bReturn = false;
+	$container = DependencyInjector::getContainer();
+	$adapter = $container->getAnnotationsadapter();
 	$reflector = $adapter->get(get_class($obj));
 
-	//Прочесть аннотации в блоке документации класса
 	$annotations = $reflector->getMethodsAnnotations();
-
-	//Произвести обход всех аннотаций
-	foreach ($annotations as $annotation) {
-		var_dump($annotation);
-		
-		//var_dump(get_class_methods($annotation));
-		//var_dump($annotation->get('Log'));
-		//Вывести название аннотации
-		//echo $annotation->getName(), PHP_EOL;
-
-		//Вывести количество аргументов
-		//echo $annotation->numberArguments(), PHP_EOL;
-
-		//Вывести аргументы
-		//print_r($annotation->getArguments());
-	}
+    if (is_array($annotations))
+    {
+        foreach ($annotations as $key => $collection) 
+        {
+            if ($key == $strMethod)
+            {
+                foreach ($collection as $annotation) 
+                {
+                    if ($annotation->getName() == $strAnnotation)
+                        $bReturn = true;
+                }
+            }
+        }
+    }
+	return $bReturn;
 }
 
 
@@ -96,9 +103,8 @@ function initApplication()
 			APPROOT.'/tests/'
 		))->register();
 		
-		$di = DependencyInjector::getInjector();
-		$logger = $di->getLogger();
-		var_dump($logger);
+		$container = DependencyInjector::getContainer();
+		$logger = $container->getLogger();
 		//$logger->log("LOG");
 		//$logger->debug("DEBUG");
 		//$logger->info("INFO");
@@ -118,5 +124,4 @@ initApplication();
 $m = new MyClass();
 echo $m->getTrue();
 
-
-isMethodAnnotated($m,'getTrue');
+echo isMethodAnnotated($m,'getFalse','LogDebug');
