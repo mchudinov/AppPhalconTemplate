@@ -4,39 +4,8 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "85fdbc3e131e4cd3381bf6843bcc0cf8",
-    "packages": [
-        {
-            "name": "apache/log4php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://git-wip-us.apache.org/repos/asf/logging-log4php.git",
-                "reference": "ae4116e491d46170378c39c8c861a0153a957f5b"
-            },
-            "require": {
-                "php": ">=5.2.7"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/main/php/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "A versatile logging framework for PHP",
-            "homepage": "http://logging.apache.org/log4php/",
-            "keywords": [
-                "log",
-                "logging",
-                "php"
-            ],
-            "time": "2013-06-07 17:49:39"
-        }
-    ],
+    "hash": "0d5e0e9902244e95041ebcac2a786712",
+    "packages": [],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -1112,7 +1081,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "apache/log4php": 20,
         "phpmd/phpmd": 20,
         "squizlabs/php_codesniffer": 20
     },
