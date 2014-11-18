@@ -1,7 +1,7 @@
 <?php
 namespace MyNamespace;
 
-defined('APPROOT') or die('No direct script access.');
+defined('APPROOT') or die('No direct access.');
 
 class MyClass
 {
