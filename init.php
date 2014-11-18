@@ -77,7 +77,7 @@ function isMethodAnnotated($obj, $strMethod, $strAnnotation)
     {
         foreach ($annotations as $key => $collection) 
         {
-            if ($key == $strMethod)
+            if (strtolower($key) == strtolower($strMethod))
             {
                 foreach ($collection as $annotation) 
                 {
