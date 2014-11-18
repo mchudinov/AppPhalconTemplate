@@ -1,4 +1,5 @@
 <?php
+defined('APPROOT') or die('No direct script access.');
 
 class LogFormatterFile implements Phalcon\Logger\FormatterInterface 
 {
