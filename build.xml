@@ -15,8 +15,9 @@
 	<target name="Unittest" depends="Composer">
 		<delete dir="${basedir}/codecoverage"/>
 		<exec executable="php" failonerror="true">
-			<arg value="./vendor/phpunit/phpunit/phpunit"/>
-            <arg value="--coverage-html=${basedir}\codecoverage"/>
+			<arg value="${basedir}/vendor/phpunit/phpunit/phpunit"/>
+            <arg value="--bootstrap=${basedir}/tests/phpunitbootstrap.php"/>
+            <arg value="--coverage-html=${basedir}/codecoverage"/>
 			<arg value="--configuration"/>
 			<arg value="${basedir}/tests/phpunit.xml"/>
 		</exec>
