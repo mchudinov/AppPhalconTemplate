@@ -9,3 +9,14 @@ $m = new MyClass();
 echo $m->getTrue();
 
 echo isMethodAnnotated($m,'getFalse','LogDebug');
+
+$container = DependencyInjector::getContainer();
+$logger = $container->getLogger();
+
+$logger->log("LOG");
+$logger->debug("DEBUG");
+$logger->info("INFO");
+$logger->notice("NOTICE");
+$logger->warning("WARNING");
+$logger->error("ERROR");
+$logger->alert("ALERT");

@@ -32,9 +32,11 @@ class Logger
 		$logger = new Phalcon\Logger\Multiple();
 		$adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/MyApp-'.date('Y-m-d').'.log');
 		$adapterFile->setFormatter(new LogFormatterFile());
+        $adapterFile->setLogLevel(Phalcon\Logger::DEBUG);
 		$adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
+        $adapterFirePhp->setLogLevel(Phalcon\Logger::DEBUG);
 		$logger->push($adapterFile);
-		//$logger->push($adapterFirePhp);
+		$logger->push($adapterFirePhp);
 		return $logger;
 	}
 }
