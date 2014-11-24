@@ -1,5 +1,6 @@
 <?php
 defined('APPROOT') or die('No direct access.');
+require_once APPROOT.'config.php';
 
 class LogFormatterFile implements Phalcon\Logger\FormatterInterface 
 {
@@ -27,17 +28,26 @@ class LogFormatterFile implements Phalcon\Logger\FormatterInterface
 
 class Logger
 {
-	static function getLogger()
+    private static $_instance;
+    private function __construct()
+    {}
+    private function __clone()
+    {}
+    
+	static function getLogger($level)
 	{
-		$logger = new Phalcon\Logger\Multiple();
-		$adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/MyApp-'.date('Y-m-d').'.log');
-		$adapterFile->setFormatter(new LogFormatterFile());
-        $adapterFile->setLogLevel(Phalcon\Logger::DEBUG);
-		$adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
-        $adapterFirePhp->setLogLevel(Phalcon\Logger::DEBUG);
-		$logger->push($adapterFile);
-		$logger->push($adapterFirePhp);
-		return $logger;
+        if (null === self::$_instance) 
+        {
+            self::$_instance = new Phalcon\Logger\Multiple();
+            $adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/MyApp-'.date('Y-m-d').'.log');
+            $adapterFile->setFormatter(new LogFormatterFile());
+            $adapterFile->setLogLevel($level);
+            $adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
+            $adapterFirePhp->setLogLevel($level);
+            self::$_instance->push($adapterFile);
+            self::$_instance->push($adapterFirePhp);
+        }
+		return self::$_instance;
 	}
 }
 
@@ -59,7 +69,7 @@ class DependencyInjector
                 return new \Phalcon\Annotations\Adapter\XCache();
             };
             self::$_instance['logger'] = function() {
-                return Logger::getLogger(1);
+                return Logger::getLogger(\Phalcon\Logger::DEBUG);
             };
         }
 		return self::$_instance;
@@ -104,6 +114,11 @@ function initApplication()
 			APPROOT.'/tests/'
 		))->register();
 		
+        $config = new \Phalcon\Config($GLOBALS['settings']);
+        $config2 = new \Phalcon\Config\Adapter\Ini(APPROOT.'config.ini');
+        $config->merge($config2);
+        var_dump($config);
+        
 		$container = DependencyInjector::getContainer();
 		$logger = $container->getLogger();	
 	} catch(\Phalcon\Exception $e) {
