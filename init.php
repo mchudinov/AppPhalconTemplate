@@ -59,7 +59,7 @@ class Logger
             $adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
             $adapterFirePhp->setLogLevel($level);
             self::$_instance->push($adapterFile);
-            self::$_instance->push($adapterFirePhp);
+            //self::$_instance->push($adapterFirePhp);
         }
 		return self::$_instance;
 	}
