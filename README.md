@@ -5,6 +5,8 @@ Template contains:
 * composer.json
 * Phalcon autoloader
 * Phalcon logger 
+* Phalcon configuration manager
+* Phalcon dependancy injector
 * ant build script
 * PHPUnit
 * MessDetector

@@ -1,6 +1,20 @@
 <?php
 defined('APPROOT') or die('No direct access.');
-require_once APPROOT.'config.php';
+
+$GLOBALS['settings'] = array(
+    'app' => array(
+        'version' => '1.0',
+        'description' => 'Phalcon template', 
+        'copyright' => '(c) 2014-2015 Mikael Chudinov' ,
+        'developer' => 'Mikael Chudinov',                                                        
+        'developermail' => 'mikael@chudinov.net',
+        'configfile' => 'config.ini',
+    ),
+    'cache' => array(
+        'enable' => true,
+        'ttl' => 28800
+    )
+);
 
 class LogFormatterFile implements Phalcon\Logger\FormatterInterface 
 {
@@ -52,6 +66,31 @@ class Logger
 }
 
 
+class Config
+{
+    private static $_instance;
+    private function __construct()
+    {}
+    private function __clone()
+    {}
+    
+	static function getConfig()
+	{
+        if (null === self::$_instance) 
+        {
+			self::$_instance = new \Phalcon\Config($GLOBALS['settings']);
+			$config = new \Phalcon\Config();
+			if (property_exists(self::$_instance->app, 'configfile'))
+			{
+				$config = new \Phalcon\Config\Adapter\Ini(APPROOT.self::$_instance->app->configfile);
+			}
+			self::$_instance->merge($config);
+        }
+		return self::$_instance;
+	}
+}
+
+
 class DependencyInjector
 {
     private static $_instance;
@@ -68,8 +107,17 @@ class DependencyInjector
             self::$_instance['annotationsadapter'] = function() {
                 return new \Phalcon\Annotations\Adapter\XCache();
             };
-            self::$_instance['logger'] = function() {
-                return Logger::getLogger(\Phalcon\Logger::DEBUG);
+			self::$_instance['config'] = Config::getConfig();
+            
+			$loglevel = \Phalcon\Logger::ERROR;
+			if (property_exists(self::$_instance->getConfig(), 'log') && 
+				property_exists(self::$_instance->getConfig()->log, 'level'))
+			{
+				$loglevel = self::$_instance->getConfig()->log->level;
+			}
+			
+			self::$_instance['logger'] = function() use ($loglevel){
+                return Logger::getLogger($loglevel);
             };
         }
 		return self::$_instance;
@@ -113,15 +161,9 @@ function initApplication()
 			APPROOT.'/tests/classes/',
 			APPROOT.'/tests/'
 		))->register();
-		
-        $config = new \Phalcon\Config($GLOBALS['settings']);
-        $config2 = new \Phalcon\Config\Adapter\Ini(APPROOT.'config.ini');
-        $config->merge($config2);
-        var_dump($config);
-        
-		$container = DependencyInjector::getContainer();
-		$logger = $container->getLogger();	
 	} catch(\Phalcon\Exception $e) {
-		 $logger->error("PhalconException: ".$e->getMessage());
+		$container = DependencyInjector::getContainer();
+		$logger = $container->getLogger();
+		$logger->error("PhalconException: ".$e->getMessage());
 	}
 }

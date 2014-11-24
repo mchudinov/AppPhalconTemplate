@@ -11,6 +11,8 @@ echo $m->getTrue();
 echo isMethodAnnotated($m,'getFalse','LogDebug');
 
 $container = DependencyInjector::getContainer();
+$config = $container->getConfig();
+var_dump($config);
 $logger = $container->getLogger();
 
 $logger->log("LOG");
