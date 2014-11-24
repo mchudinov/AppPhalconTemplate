@@ -48,12 +48,12 @@ class Logger
     private function __clone()
     {}
     
-	static function getLogger($level)
+	static function getLogger($level, $appname)
 	{
         if (null === self::$_instance) 
         {
             self::$_instance = new Phalcon\Logger\Multiple();
-            $adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/MyApp-'.date('Y-m-d').'.log');
+            $adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/'.$appname.'-'.date('Y-m-d').'.log');
             $adapterFile->setFormatter(new LogFormatterFile());
             $adapterFile->setLogLevel($level);
             $adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
@@ -116,8 +116,15 @@ class DependencyInjector
 				$loglevel = self::$_instance->getConfig()->log->level;
 			}
 			
-			self::$_instance['logger'] = function() use ($loglevel){
-                return Logger::getLogger($loglevel);
+			$appname = 'php';
+			if (property_exists(self::$_instance->getConfig(), 'application') && 
+				property_exists(self::$_instance->getConfig()->application, 'name'))
+			{
+				$appname = self::$_instance->getConfig()->application->name;
+			}
+			
+			self::$_instance['logger'] = function() use ($loglevel, $appname){
+                return Logger::getLogger($loglevel, $appname);
             };
         }
 		return self::$_instance;
