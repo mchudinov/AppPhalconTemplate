@@ -2,7 +2,7 @@
 defined('APPROOT') or die('No direct access.');
 
 $GLOBALS['settings'] = array(
-    'app' => array(
+    'application' => array(
         'version' => '1.0',
         'description' => 'Phalcon template', 
         'copyright' => '(c) 2014-2015 Mikael Chudinov' ,
@@ -80,9 +80,9 @@ class Config
         {
 			self::$_instance = new \Phalcon\Config($GLOBALS['settings']);
 			$config = new \Phalcon\Config();
-			if (property_exists(self::$_instance->app, 'configfile'))
+			if (property_exists(self::$_instance->application, 'configfile'))
 			{
-				$config = new \Phalcon\Config\Adapter\Ini(APPROOT.self::$_instance->app->configfile);
+				$config = new \Phalcon\Config\Adapter\Ini(APPROOT.self::$_instance->application->configfile);
 			}
 			self::$_instance->merge($config);
         }
