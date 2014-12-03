@@ -109,19 +109,9 @@ class DependencyInjector
             };
 			self::$_instance['config'] = Config::getConfig();
             
-			$loglevel = \Phalcon\Logger::ERROR;
-			if (property_exists(self::$_instance->getConfig(), 'log') && 
-				property_exists(self::$_instance->getConfig()->log, 'level'))
-			{
-				$loglevel = self::$_instance->getConfig()->log->level;
-			}
-			
-			$appname = 'php';
-			if (property_exists(self::$_instance->getConfig(), 'application') && 
-				property_exists(self::$_instance->getConfig()->application, 'name'))
-			{
-				$appname = self::$_instance->getConfig()->application->name;
-			}
+			$objConfig = self::$_instance->getConfig();
+			$loglevel = $loglevel = $objConfig->log->level;                     // \Phalcon\Logger::ERROR;
+            $appname = str_replace(' ', '', $objConfig->application->name);
 			
 			self::$_instance['logger'] = function() use ($loglevel, $appname){
                 return Logger::getLogger($loglevel, $appname);
