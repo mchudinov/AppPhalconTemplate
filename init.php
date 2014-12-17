@@ -13,7 +13,12 @@ $GLOBALS['settings'] = array(
     'cache' => array(
         'enable' => true,
         'ttl' => 28800
-    )
+    ),
+	'log' => array(
+		'enable' => true, 											
+		'level' => 'info', 											// debug|error|warning|info
+		'adapter' => 'file'										// file|firephp
+	)
 );
 
 class LogFormatterFile implements Phalcon\Logger\FormatterInterface 
@@ -48,18 +53,34 @@ class Logger
     private function __clone()
     {}
     
-	static function getLogger($level, $appname)
+	static function getLogger($enable, $level, $appname, $adapter)
 	{
         if (null === self::$_instance) 
         {
             self::$_instance = new Phalcon\Logger\Multiple();
-            $adapterFile = new Phalcon\Logger\Adapter\File(APPROOT.'/log/'.$appname.'-'.date('Y-m-d').'.log');
-            $adapterFile->setFormatter(new LogFormatterFile());
-            $adapterFile->setLogLevel($level);
-            $adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
-            $adapterFirePhp->setLogLevel($level);
-            self::$_instance->push($adapterFile);
-            //self::$_instance->push($adapterFirePhp);
+			
+			if ($enable)
+			{
+				if (strstr(strtolower($adapter), 'file'))
+				{
+					try{
+						$adapterFile = @(new Phalcon\Logger\Adapter\File(APPROOT.'/log/'.$appname.'-'.date('Y-m-d').'.log'));
+						$adapterFile->setFormatter(new LogFormatterFile());
+						$adapterFile->setLogLevel($level);
+						self::$_instance->push($adapterFile);
+					}
+					catch(\Exception $e){
+						//echo "Exception: ".$e->getMessage();
+					}
+				}
+				
+				if (strstr(strtolower($adapter), 'firephp'))
+				{
+					$adapterFirePhp = new Phalcon\Logger\Adapter\Firephp("");
+					$adapterFirePhp->setLogLevel($level);
+					self::$_instance->push($adapterFirePhp);
+				}
+			}
         }
 		return self::$_instance;
 	}
@@ -110,11 +131,12 @@ class DependencyInjector
 			self::$_instance['config'] = Config::getConfig();
             
 			$objConfig = self::$_instance->getConfig();
-			$loglevel = $loglevel = $objConfig->log->level;                     // \Phalcon\Logger::ERROR;
+			$loglevel = $objConfig->log->level;                     // \Phalcon\Logger::ERROR;
             $appname = str_replace(' ', '', $objConfig->application->name);
-			
-			self::$_instance['logger'] = function() use ($loglevel, $appname){
-                return Logger::getLogger($loglevel, $appname);
+			$adapter = $objConfig->log->adapter;
+            $enable = $objConfig->log->enable;
+			self::$_instance['logger'] = function() use ($enable, $loglevel, $appname, $adapter){
+                return Logger::getLogger($enable, $loglevel, $appname, $adapter);
             };
         }
 		return self::$_instance;
